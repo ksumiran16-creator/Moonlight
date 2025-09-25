@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enchanted Night Journey</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            overflow: hidden;
+            height: 100vh;
+            background: #0a0a2a;
+            color: white;
+        }
+
+        /* Scene containers */
+        .scene {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: opacity 1.5s ease;
+        }
+
+        #scene1 {
+            opacity: 1;
+        }
+
+        #scene2, #scene3, #scene4 {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Moon and stars */
+        .moon {
+            position: absolute;
+            top: 10%;
+            right: 10%;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #f5f3ce 0%, #e6e3b9 70%);
+            border-radius: 50%;
+            box-shadow: 0 0 40px 10px rgba(245, 243, 206, 0.5);
+            z-index: 1;
+        }
+
+        .crescent-moon {
+            position: absolute;
+            top: 10%;
+            right: 10%;
+            width: 80px;
+            height: 80px;
+            background: #0a0a2a;
+            border-radius: 50%;
+            box-shadow: -15px 0 0 0 #f5f3ce;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite alternate;
+            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        .star.glow {
+            box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.9);
+            animation: glowTwinkle 2s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes glowTwinkle {
+            0% { opacity: 0.5; transform: scale(1); box-shadow: 0 0 15px 3px rgba(255, 255, 255, 0.7); }
+            100% { opacity: 1; transform: scale(1.3); box-shadow: 0 0 25px 8px rgba(255, 255, 255, 1); }
+        }
+
+        /* Mountains */
+        .mountains {
+            position: absolute;
+            bottom: 40%;
+            width: 100%;
+            height: 30%;
+            z-index: 2;
+        }
+
+        .mountain {
+            position: absolute;
+            bottom: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-bottom: 200px solid #1a1a3a;
+            filter: blur(1px);
+        }
+
+        .mountain:nth-child(1) {
+            left: 5%;
+            border-bottom-color: #151530;
+            border-bottom-width: 180px;
+            border-left-width: 120px;
+            border-right-width: 120px;
+        }
+
+        .mountain:nth-child(2) {
+            left: 25%;
+            border-bottom-color: #121228;
+            border-bottom-width: 220px;
+            border-left-width: 180px;
+            border-right-width: 180px;
+        }
+
+        .mountain:nth-child(3) {
+            left: 55%;
+            border-bottom-color: #0e0e20;
+            border-bottom-width: 250px;
+            border-left-width: 200px;
+            border-right-width: 200px;
+        }
+
+        .mountain:nth-child(4) {
+            left: 75%;
+            border-bottom-color: #151530;
+            border-bottom-width: 190px;
+            border-left-width: 140px;
+            border-right-width: 140px;
+        }
+
+        /* Clouds */
+        .clouds {
+            position: absolute;
+            top: 20%;
+            width: 100%;
+            height: 20%;
+            z-index: 1;
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            animation: moveCloud 60s infinite linear;
+            filter: blur(5px);
+        }
+
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .cloud::before {
+            width: 60%;
+            height: 60%;
+            top: -30%;
+            left: 10%;
+        }
+
+        .cloud::after {
+            width: 40%;
+            height: 40%;
+            top: -20%;
+            right: 20%;
+        }
+
+        @keyframes moveCloud {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100vw); }
+        }
+
+        /* Water and boat */
+        .water {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(to top, #0a0a2a, #1a1a4a, #2a2a6a);
+            overflow: hidden;
+            z-index: 3;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: wave 5s infinite linear;
+        }
+
+        .wave:nth-child(2) {
+            animation-delay: 0.5s;
+            opacity: 0.7;
+        }
+
+        .wave:nth-child(3) {
+            animation-delay: 1s;
+            opacity: 0.5;
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Enhanced boat design */
+        .boat {
+            position: absolute;
+            bottom: 30%;
+            left: 30%;
+            width: 200px;
+            height: 90px;
+            cursor: pointer;
+            transition: transform 0.5s ease;
+            z-index: 10;
+            animation: float 4s infinite ease-in-out;
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.5));
+        }
+
+        .boat:hover {
+            transform: scale(1.05);
+        }
+
+        .boat-body {
+            position: absolute;
+            width: 100%;
+            height: 40px;
+            background: linear-gradient(to bottom, #8B4513, #A0522D);
+            border-radius: 10px 10px 0 0;
+            bottom: 0;
+            box-shadow: inset 0 -5px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .boat-deck {
+            position: absolute;
+            width: 90%;
+            height: 20px;
+            background: #D2691E;
+            bottom: 40px;
+            left: 5%;
+            border-radius: 5px 5px 0 0;
+            box-shadow: inset 0 -3px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .boat-cabin {
+            position: absolute;
+            width: 60%;
+            height: 40px;
+            background: linear-gradient(to bottom, #A0522D, #8B4513);
+            bottom: 60px;
+            left: 20%;
+            border-radius: 5px 5px 0 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .boat-window {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #87CEEB;
+            border-radius: 50%;
+            bottom: 70px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3), 0 0 10px #87CEEB;
+        }
+
+        .boat-window.left {
+            left: 25%;
+        }
+
+        .boat-window.right {
+            right: 25%;
+        }
+
+        .boat-mast {
+            position: absolute;
+            width: 5px;
+            height: 80px;
+            background: linear-gradient(to bottom, #8B4513, #5D4037);
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .boat-sail {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 70px solid rgba(255, 255, 255, 0.9);
+            bottom: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.3));
+        }
+
+        .boat-light {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: gold;
+            border-radius: 50%;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 15px 8px gold;
+            animation: lightFlicker 2s infinite alternate;
+            z-index: 2;
+        }
+
+        .boat-ripple {
+            position: absolute;
+            width: 20px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: ripple 2s infinite;
+        }
+
+        .boat-ripple:nth-child(2) {
+            animation-delay: 0.5s;
+            width: 30px;
+        }
+
+        .boat-ripple:nth-child(3) {
+            animation-delay: 1s;
+            width: 40px;
+        }
+
+        @keyframes lightFlicker {
+            0% { opacity: 0.7; box-shadow: 0 0 10px 5px gold; }
+            100% { opacity: 1; box-shadow: 0 0 20px 10px gold; }
+        }
+
+        @keyframes ripple {
+            0% { transform: translateX(-50%) scale(1); opacity: 0.7; }
+            100% { transform: translateX(-50%) scale(2); opacity: 0; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(-1deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+
+        /* Moonlight reflection */
+        .moonlight {
+            position: absolute;
+            bottom: 40%;
+            right: 10%;
+            width: 200px;
+            height: 20px;
+            background: linear-gradient(to right, transparent, rgba(245, 243, 206, 0.3), transparent);
+            border-radius: 50%;
+            animation: shimmer 8s infinite ease-in-out;
+            z-index: 2;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Dialog box */
+        .dialog {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 100;
+            display: none;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            min-width: 300px;
+        }
+
+        .dialog h3 {
+            margin-bottom: 10px;
+            color: #f5f3ce;
+        }
+
+        .dialog input {
+            padding: 10px;
+            margin: 15px 0;
+            border: none;
+            border-radius: 5px;
+            width: 200px;
+            text-align: center;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .dialog button {
+            padding: 10px 25px;
+            background: #4a4a8a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 16px;
+        }
+
+        .dialog button:hover {
+            background: #5a5a9a;
+            transform: translateY(-2px);
+        }
+
+        /* Garden scene */
+        .garden {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #0a0a2a, #1a1a4a, #2a2a6a);
+        }
+
+        .grass {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 30%;
+            background: linear-gradient(to top, #0a3a0a, #1a5a1a);
+        }
+
+        /* Rose flowers */
+        .rose {
+            position: absolute;
+            width: 40px;
+            height: 80px;
+            bottom: 30%;
+            animation: sway 5s infinite ease-in-out;
+        }
+
+        .rose-stem {
+            position: absolute;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #228B22, #006400);
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .rose-leaf {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #228B22;
+            border-radius: 50% 0 50% 50%;
+            transform: rotate(45deg);
+        }
+
+        .rose-leaf:nth-child(2) {
+            top: 30px;
+            left: 10px;
+        }
+
+        .rose-leaf:nth-child(3) {
+            top: 50px;
+            right: 10px;
+        }
+
+        .rose-flower {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 30px;
+            background: #FF1493;
+            border-radius: 50% 50% 50% 0;
+            box-shadow: 0 0 10px #FF1493;
+            animation: bloom 4s infinite alternate;
+        }
+
+        .rose-flower::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #FF69B4;
+            border-radius: 50% 50% 0 50%;
+            transform: rotate(45deg);
+        }
+
+        @keyframes bloom {
+            0% { transform: translateX(-50%) scale(0.9); }
+            100% { transform: translateX(-50%) scale(1.1); }
+        }
+
+        @keyframes sway {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+
+        /* Fireflies */
+        .firefly {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: yellow;
+            border-radius: 50%;
+            box-shadow: 0 0 10px yellow;
+            animation: flyAround 10s infinite linear;
+            z-index: 10;
+        }
+
+        @keyframes flyAround {
+            0% { transform: translate(0, 0); opacity: 0; }
+            10% { opacity: 1; }
+            25% { transform: translate(100px, 50px); }
+            50% { transform: translate(200px, -30px); }
+            75% { transform: translate(100px, 80px); }
+            100% { transform: translate(0, 0); opacity: 0; }
+        }
+
+        /* Bees */
+        .bee {
+            position: absolute;
+            width: 20px;
+            height: 10px;
+            background: yellow;
+            border-radius: 50%;
+            animation: fly 15s infinite linear;
+            z-index: 10;
+            filter: drop-shadow(0 0 5px yellow);
+        }
+
+        .bee::before, .bee::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: transparent;
+            border: 1px solid white;
+            border-radius: 50%;
+            top: -5px;
+            animation: wingFlap 0.2s infinite alternate;
+        }
+
+        .bee::before {
+            left: -5px;
+        }
+
+        .bee::after {
+            right: -5px;
+        }
+
+        @keyframes wingFlap {
+            0% { transform: scaleY(1); }
+            100% { transform: scaleY(0.7); }
+        }
+
+        @keyframes fly {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(200px, 100px); }
+            50% { transform: translate(400px, 50px); }
+            75% { transform: translate(200px, 150px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* Helicopter */
+        .helicopter {
+            position: absolute;
+            width: 150px;
+            height: 60px;
+            top: 30%;
+            left: -200px;
+            z-index: 20;
+            transition: left 4s ease-in-out;
+        }
+
+        .helicopter-body {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #444, #222);
+            border-radius: 10px 30px 10px 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .helicopter-cockpit {
+            position: absolute;
+            width: 40px;
+            height: 30px;
+            background: linear-gradient(to bottom, #87CEEB, #4682B4);
+            border-radius: 50% 50% 0 0;
+            top: 5px;
+            left: 10px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .helicopter-tail {
+            position: absolute;
+            width: 80px;
+            height: 15px;
+            background: linear-gradient(to bottom, #444, #222);
+            top: 20px;
+            right: -70px;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .helicopter-rotor {
+            position: absolute;
+            width: 200px;
+            height: 10px;
+            background: #333;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 5px;
+            animation: rotateRotor 0.2s infinite linear;
+        }
+
+        .helicopter-rotor::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #333;
+            transform: rotate(90deg);
+        }
+
+        .helicopter-tail-rotor {
+            position: absolute;
+            width: 40px;
+            height: 5px;
+            background: #333;
+            top: 5px;
+            right: -75px;
+            animation: rotateTailRotor 0.1s infinite linear;
+        }
+
+        @keyframes rotateRotor {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            100% { transform: translateX(-50%) rotate(360deg); }
+        }
+
+        @keyframes rotateTailRotor {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .helicopter-light {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: yellow;
+            border-radius: 50%;
+            bottom: 10px;
+            left: 20px;
+            box-shadow: 0 0 10px yellow;
+            animation: lightFlicker 1s infinite alternate;
+        }
+
+        /* Helicopter dialog */
+        .helicopter-dialog {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 100;
+            display: none;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            min-width: 300px;
+        }
+
+        .helicopter-dialog h3 {
+            margin-bottom: 10px;
+            color: #f5f3ce;
+        }
+
+        .helicopter-dialog input {
+            padding: 10px;
+            margin: 15px 0;
+            border: none;
+            border-radius: 5px;
+            width: 200px;
+            text-align: center;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .helicopter-dialog button {
+            padding: 10px 25px;
+            background: #4a4a8a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 16px;
+        }
+
+        .helicopter-dialog button:hover {
+            background: #5a5a9a;
+            transform: translateY(-2px);
+        }
+
+        /* Heart locker scene */
+        .heart-locker-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 30;
+        }
+
+        .heart-locker {
+            width: 200px;
+            height: 180px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.5s ease;
+            animation: float 4s infinite ease-in-out;
+        }
+
+        .heart-locker:hover {
+            transform: scale(1.05);
+        }
+
+        .heart-locker::before,
+        .heart-locker::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 160px;
+            background: linear-gradient(to bottom, #ff6b6b, #ff5252);
+            border-radius: 50px 50px 0 0;
+            box-shadow: 0 0 20px rgba(255, 82, 82, 0.7);
+        }
+
+        .heart-locker::before {
+            left: 100px;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+        }
+
+        .heart-locker::after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+
+        .heart-locker.open::before {
+            transform: rotate(-45deg) translateX(-20px) translateY(10px);
+            transition: transform 1s ease;
+        }
+
+        .heart-locker.open::after {
+            transform: rotate(45deg) translateX(20px) translateY(10px);
+            transition: transform 1s ease;
+        }
+
+        .lock {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: gold;
+            border-radius: 5px;
+            z-index: 2;
+            box-shadow: 0 0 10px gold;
+        }
+
+        .lock::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #333;
+            border-radius: 50%;
+            top: 5px;
+            left: 10px;
+        }
+
+        .lock::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 20px;
+            background: gold;
+            border-radius: 0 0 5px 5px;
+            top: 40px;
+            left: 5px;
+        }
+
+        /* Heart locker dialog */
+        .locker-dialog {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 100;
+            display: none;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            min-width: 300px;
+        }
+
+        .locker-dialog h3 {
+            margin-bottom: 10px;
+            color: #f5f3ce;
+        }
+
+        .locker-dialog input {
+            padding: 10px;
+            margin: 15px 0;
+            border: none;
+            border-radius: 5px;
+            width: 200px;
+            text-align: center;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .locker-dialog button {
+            padding: 10px 25px;
+            background: #4a4a8a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 16px;
+        }
+
+        .locker-dialog button:hover {
+            background: #5a5a9a;
+            transform: translateY(-2px);
+        }
+
+        /* Proposal dialog */
+        .proposal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            z-index: 100;
+            display: none;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+            min-width: 350px;
+        }
+
+        .proposal h2 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            color: gold;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+        }
+
+        .proposal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .proposal button {
+            padding: 12px 35px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        #yesBtn {
+            background: linear-gradient(to right, #4CAF50, #45a049);
+            color: white;
+        }
+
+        #noBtn {
+            background: linear-gradient(to right, #f44336, #da190b);
+            color: white;
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.7);
+        }
+
+        #noBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(244, 67, 54, 0.7);
+        }
+
+        /* Celebration effects */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #f00;
+            border-radius: 50%;
+            animation: fall 5s linear forwards;
+            z-index: 1000;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        .blossom {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: pink;
+            border-radius: 50% 0 50% 50%;
+            animation: blossomFall 8s linear forwards;
+            z-index: 1000;
+        }
+
+        @keyframes blossomFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .light-up {
+            animation: lightUp 2s forwards;
+        }
+
+        @keyframes lightUp {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.5); }
+        }
+
+        /* Celebration text */
+        #celebrationText {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            color: gold;
+            text-shadow: 0 0 10px rgba(255,215,0,0.7);
+            display: none;
+            z-index: 1001;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Scene 1: Boat on water at night -->
+    <div class="scene" id="scene1">
+        <div class="moon"></div>
+        <div class="moonlight"></div>
+        
+        <!-- Mountains -->
+        <div class="mountains">
+            <div class="mountain"></div>
+            <div class="mountain"></div>
+            <div class="mountain"></div>
+            <div class="mountain"></div>
+        </div>
+        
+        <!-- Clouds -->
+        <div class="clouds" id="cloudsContainer"></div>
+        
+        <div class="water">
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="boat" id="boat">
+                <div class="boat-body"></div>
+                <div class="boat-deck"></div>
+                <div class="boat-cabin"></div>
+                <div class="boat-window left"></div>
+                <div class="boat-window right"></div>
+                <div class="boat-mast"></div>
+                <div class="boat-sail"></div>
+                <div class="boat-light"></div>
+                <div class="boat-ripple"></div>
+                <div class="boat-ripple"></div>
+                <div class="boat-ripple"></div>
+            </div>
+        </div>
+        
+        <!-- Name verification dialog -->
+        <div class="dialog" id="nameDialog">
+            <h3>Welcome Traveler</h3>
+            <p>What is your name?</p>
+            <input type="text" id="nameInput" placeholder="Enter your name">
+            <button id="submitName">Submit</button>
+        </div>
+    </div>
+
+    <!-- Scene 2: Garden with helicopter -->
+    <div class="scene" id="scene2">
+        <div class="crescent-moon"></div>
+        <div class="garden">
+            <div class="grass"></div>
+            <!-- Roses, fireflies, and bees will be generated by JS -->
+        </div>
+        
+        <!-- Helicopter -->
+        <div class="helicopter" id="helicopter">
+            <div class="helicopter-body">
+                <div class="helicopter-cockpit"></div>
+                <div class="helicopter-tail"></div>
+                <div class="helicopter-rotor"></div>
+                <div class="helicopter-tail-rotor"></div>
+                <div class="helicopter-light"></div>
+            </div>
+        </div>
+        
+        <!-- Helicopter dialog -->
+        <div class="helicopter-dialog" id="helicopterDialog">
+            <h3 id="helicopterQuestion">Wanna get ride?</h3>
+            <input type="text" id="helicopterInput" placeholder="Type your answer">
+            <button id="helicopterSubmit">Submit</button>
+        </div>
+    </div>
+
+    <!-- Scene 3: Heart locker -->
+    <div class="scene" id="scene3">
+        <div class="crescent-moon"></div>
+        <div class="garden">
+            <div class="grass"></div>
+            <!-- Stars will be generated by JS -->
+        </div>
+        
+        <!-- Heart locker -->
+        <div class="heart-locker-container">
+            <div class="heart-locker" id="heartLocker">
+                <div class="lock"></div>
+            </div>
+            <p style="margin-top: 20px; color: white; font-size: 18px;">Click the heart locker to open</p>
+        </div>
+        
+        <!-- Locker dialog -->
+        <div class="locker-dialog" id="lockerDialog">
+            <h3>Enter the 4-digit PIN</h3>
+            <input type="password" id="pinInput" maxlength="4">
+            <button id="pinSubmit">Submit</button>
+        </div>
+    </div>
+
+    <!-- Scene 4: Proposal -->
+    <div class="scene" id="scene4">
+        <div class="crescent-moon"></div>
+        <div class="garden">
+            <div class="grass"></div>
+            <!-- Celebration content will be added by JS -->
+        </div>
+        
+        <!-- Proposal dialog -->
+        <div class="proposal" id="proposalDialog">
+            <h2>Will you marry me?</h2>
+            <div class="proposal-buttons">
+                <button id="yesBtn">Yes</button>
+                <button id="noBtn">No</button>
+            </div>
+        </div>
+        
+        <h1 id="celebrationText">Congratulations!</h1>
+    </div>
+
+    <script>
+        // Generate stars with glowing effect
+        function generateStars(container, count) {
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Make some stars glow more than others
+                if (Math.random() > 0.7) {
+                    star.classList.add('glow');
+                }
+                
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 70}%`;
+                star.style.width = `${Math.random() * 3 + 1}px`;
+                star.style.height = star.style.width;
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                container.appendChild(star);
+            }
+        }
+
+        // Generate clouds
+        function generateClouds(container, count) {
+            for (let i = 0; i < count; i++) {
+                const cloud = document.createElement('div');
+                cloud.classList.add('cloud');
+                
+                cloud.style.width = `${Math.random() * 200 + 100}px`;
+                cloud.style.height = `${Math.random() * 60 + 30}px`;
+                cloud.style.top = `${Math.random() * 30}%`;
+                cloud.style.opacity = `${Math.random() * 0.3 + 0.1}`;
+                cloud.style.animationDuration = `${Math.random() * 40 + 40}s`;
+                cloud.style.animationDelay = `${Math.random() * 20}s`;
+                
+                container.appendChild(cloud);
+            }
+        }
+
+        // Generate roses
+        function generateRoses(container, count) {
+            for (let i = 0; i < count; i++) {
+                const rose = document.createElement('div');
+                rose.classList.add('rose');
+                rose.style.left = `${Math.random() * 100}%`;
+                rose.style.bottom = `${30 + Math.random() * 10}%`;
+                rose.style.animationDelay = `${Math.random() * 5}s`;
+                
+                const stem = document.createElement('div');
+                stem.classList.add('rose-stem');
+                rose.appendChild(stem);
+                
+                const leaf1 = document.createElement('div');
+                leaf1.classList.add('rose-leaf');
+                rose.appendChild(leaf1);
+                
+                const leaf2 = document.createElement('div');
+                leaf2.classList.add('rose-leaf');
+                rose.appendChild(leaf2);
+                
+                const flower = document.createElement('div');
+                flower.classList.add('rose-flower');
+                rose.appendChild(flower);
+                
+                container.appendChild(rose);
+            }
+        }
+
+        // Generate fireflies
+        function generateFireflies(container, count) {
+            for (let i = 0; i < count; i++) {
+                const firefly = document.createElement('div');
+                firefly.classList.add('firefly');
+                firefly.style.left = `${Math.random() * 100}%`;
+                firefly.style.top = `${Math.random() * 70}%`;
+                firefly.style.animationDelay = `${Math.random() * 10}s`;
+                container.appendChild(firefly);
+            }
+        }
+
+        // Generate bees
+        function generateBees(container, count) {
+            for (let i = 0; i < count; i++) {
+                const bee = document.createElement('div');
+                bee.classList.add('bee');
+                bee.style.left = `${Math.random() * 100}%`;
+                bee.style.top = `${Math.random() * 70}%`;
+                bee.style.animationDelay = `${Math.random() * 15}s`;
+                container.appendChild(bee);
+            }
+        }
+
+        // Create celebration effects
+        function createCelebration() {
+            // Create confetti
+            for (let i = 0; i < 200; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                document.getElementById('scene4').appendChild(confetti);
+            }
+            
+            // Create blossoms
+            for (let i = 0; i < 100; i++) {
+                const blossom = document.createElement('div');
+                blossom.classList.add('blossom');
+                blossom.style.left = `${Math.random() * 100}%`;
+                blossom.style.background = `hsl(${Math.random() * 60 + 300}, 100%, 70%)`;
+                blossom.style.animationDuration = `${Math.random() * 5 + 3}s`;
+                document.getElementById('scene4').appendChild(blossom);
+            }
+            
+            // Light up the scene
+            document.getElementById('scene4').classList.add('light-up');
+            
+            // Show celebration text
+            setTimeout(() => {
+                document.getElementById('celebrationText').style.display = 'block';
+            }, 1000);
+        }
+
+        // Initialize the scenes
+        document.addEventListener('DOMContentLoaded', function() {
+            // Generate stars for scene1
+            generateStars(document.getElementById('scene1'), 200);
+            
+            // Generate clouds for scene1
+            generateClouds(document.getElementById('cloudsContainer'), 8);
+            
+            // Generate stars, roses, fireflies, and bees for scene2
+            generateStars(document.getElementById('scene2'), 200);
+            generateRoses(document.getElementById('scene2').querySelector('.garden'), 20);
+            generateFireflies(document.getElementById('scene2').querySelector('.garden'), 15);
+            generateBees(document.getElementById('scene2').querySelector('.garden'), 5);
+            
+            // Generate stars for scene3
+            generateStars(document.getElementById('scene3'), 200);
+            
+            // Generate stars and roses for scene4
+            generateStars(document.getElementById('scene4'), 200);
+            generateRoses(document.getElementById('scene4').querySelector('.garden'), 30);
+            
+            // Boat click event
+            document.getElementById('boat').addEventListener('click', function() {
+                document.getElementById('nameDialog').style.display = 'block';
+            });
+            
+            // Name submission
+            document.getElementById('submitName').addEventListener('click', function() {
+                const name = document.getElementById('nameInput').value.trim();
+                
+                if (name.toLowerCase() === 'gasika' || name.toLowerCase() === 'gasu') {
+                    // Correct name - move to next scene
+                    document.getElementById('nameDialog').innerHTML = '<p>Welcome, Gasika! The journey continues...</p>';
+                    
+                    // Animate boat moving
+                    document.getElementById('boat').style.transition = 'all 3s ease';
+                    document.getElementById('boat').style.left = '100%';
+                    
+                    setTimeout(() => {
+                        // Switch to scene2
+                        document.getElementById('scene1').style.opacity = '0';
+                        document.getElementById('scene1').style.pointerEvents = 'none';
+                        
+                        document.getElementById('scene2').style.opacity = '1';
+                        document.getElementById('scene2').style.pointerEvents = 'auto';
+                        
+                        // Animate helicopter flying in
+                        setTimeout(() => {
+                            const helicopter = document.getElementById('helicopter');
+                            helicopter.style.left = 'calc(50% - 75px)';
+                            
+                            // Show helicopter dialog after helicopter arrives
+                            setTimeout(() => {
+                                document.getElementById('helicopterDialog').style.display = 'block';
+                            }, 2000);
+                        }, 1000);
+                    }, 3000);
+                } else {
+                    // Incorrect name
+                    document.getElementById('nameDialog').innerHTML = '<p>Sorry, you are not allowed to continue this journey.</p>';
+                    
+                    setTimeout(() => {
+                        document.getElementById('nameDialog').style.display = 'none';
+                    }, 2000);
+                }
+            });
+            
+            // Helicopter dialog submission - FIXED VERSION
+            let isAskingSoulmate = false;
+            
+            document.getElementById('helicopterSubmit').addEventListener('click', function() {
+                const answer = document.getElementById('helicopterInput').value.trim().toLowerCase();
+                const helicopter = document.getElementById('helicopter');
+                const dialog = document.getElementById('helicopterDialog');
+                const question = document.getElementById('helicopterQuestion');
+                const input = document.getElementById('helicopterInput');
+                
+                if (!isAskingSoulmate) {
+                    // First question: "Wanna get ride?"
+                    if (answer === 'yes') {
+                        // User wants a ride - ask for soulmate name
+                        isAskingSoulmate = true;
+                        question.textContent = 'The name of your soulmate?';
+                        input.value = '';
+                        input.placeholder = 'Enter soulmate name';
+                    } else if (answer === 'no') {
+                        // User doesn't want a ride - helicopter flies away and comes back
+                        dialog.style.display = 'none';
+                        helicopter.style.left = '100%';
+                        
+                        setTimeout(() => {
+                            helicopter.style.left = '-200px';
+                            
+                            setTimeout(() => {
+                                helicopter.style.left = 'calc(50% - 75px)';
+                                
+                                setTimeout(() => {
+                                    dialog.style.display = 'block';
+                                    input.value = '';
+                                    input.placeholder = 'Type your answer';
+                                }, 2000);
+                            }, 1000);
+                        }, 2000);
+                    } else {
+                        // Invalid answer
+                        input.value = '';
+                        input.placeholder = 'Please type yes or no';
+                    }
+                } else {
+                    // Second question: "The name of your soulmate?"
+                    if (answer === 'sumiran') {
+                        // Correct soulmate name - helicopter flies away
+                        dialog.style.display = 'none';
+                        helicopter.style.left = '100%';
+                        
+                        // Switch to scene3 after helicopter flies away
+                        setTimeout(() => {
+                            document.getElementById('scene2').style.opacity = '0';
+                            document.getElementById('scene2').style.pointerEvents = 'none';
+                            
+                            document.getElementById('scene3').style.opacity = '1';
+                            document.getElementById('scene3').style.pointerEvents = 'auto';
+                        }, 3000);
+                    } else {
+                        // Wrong soulmate name
+                        input.value = '';
+                        input.placeholder = 'Wrong, say again';
+                    }
+                }
+            });
+            
+            // Heart locker click event
+            document.getElementById('heartLocker').addEventListener('click', function() {
+                document.getElementById('lockerDialog').style.display = 'block';
+            });
+            
+            // Locker PIN submission
+            document.getElementById('pinSubmit').addEventListener('click', function() {
+                const pin = document.getElementById('pinInput').value;
+                
+                if (pin === '0000') {
+                    // Correct PIN - open heart locker
+                    document.getElementById('lockerDialog').style.display = 'none';
+                    document.getElementById('heartLocker').classList.add('open');
+                    
+                    // Show proposal after locker opens
+                    setTimeout(() => {
+                        document.getElementById('scene3').style.opacity = '0';
+                        document.getElementById('scene3').style.pointerEvents = 'none';
+                        
+                        document.getElementById('scene4').style.opacity = '1';
+                        document.getElementById('scene4').style.pointerEvents = 'auto';
+                        
+                        // Show proposal dialog
+                        setTimeout(() => {
+                            document.getElementById('proposalDialog').style.display = 'block';
+                        }, 1000);
+                    }, 2000);
+                } else {
+                    // Wrong PIN
+                    document.getElementById('pinInput').value = '';
+                    document.getElementById('pinInput').placeholder = 'Wrong, try again';
+                }
+            });
+            
+            // Proposal response
+            document.getElementById('yesBtn').addEventListener('click', function() {
+                // Hide proposal dialog
+                document.getElementById('proposalDialog').style.display = 'none';
+                
+                // Start celebration
+                createCelebration();
+            });
+            
+            document.getElementById('noBtn').addEventListener('click', function() {
+                // Make the No button disappear
+                document.getElementById('noBtn').style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
